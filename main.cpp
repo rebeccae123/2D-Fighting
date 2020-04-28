@@ -54,11 +54,17 @@ int test4 = 1;
 int test5 = 1;
 int test6 = 1;
 
+//code for ability movement
+float f1_xability = 0;
+bool abilitypressed = false;
+bool abhaspress = false;
 
 /***************************************************************************/
 //battleground
 void drawBattleground();
 void writeControls();
+void f1Ability(int);
+
 
 void fighterFunction(int fighter){
 	switch(fighter) {
@@ -91,22 +97,22 @@ void initWindow()
 void display(void)   // Create The Display Function
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	      // Clear Screen
-	
+
 	glPushMatrix();
-	glMatrixMode(GL_MODELVIEW); 
-	glLoadIdentity(); 
-	
-	
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+
 	//set translations and scale
 	glTranslatef(translate_x, translate_y, translate_z);
 	glScalef(scale_x, scale_y, scale_z);
 
 	glOrtho(1, 1, 1, 1, 1, 1);
 	glEnable(GL_DEPTH_CLAMP);
-	
+
 	//draw controls
 	writeControls();
-	
+
 	//draw battleground
 	drawBattleground();
 
@@ -114,12 +120,24 @@ void display(void)   // Create The Display Function
 	glRotatef(view_angle_1, 1, 0, 0);
 	glRotatef(view_angle_2, 0, 1, 0);
 	glRotatef(view_angle_3, 0, 0, 1);
-	
+
 
 	//draw first fighter
 	glPushMatrix();
 	glTranslatef(firstFighterPosition, 0, 0);
 	fighterFunction(firstFighter);
+	if (abilitypressed) {
+		glPushMatrix();
+		glColor3f(1, 0.0, 0.0);
+		glTranslatef(f1_xability, 0, 0.09);
+		glutSolidCube(.05);
+		glPopMatrix();
+		if (!abhaspress) {
+			glutTimerFunc(0, f1Ability, 0);
+		}
+	} else {
+		f1_xability = 0;
+	}
 	glPopMatrix();
 
 
@@ -132,7 +150,7 @@ void display(void)   // Create The Display Function
 
 
 
-	
+
 	glPopMatrix();
 	glutSwapBuffers();                                      // Draw Frame Buffer
 }
@@ -199,37 +217,66 @@ void keyboard ( unsigned char key, int x, int y )  // Create Keyboard Function
 			secondFighterPosition+=0.07;
 
 			break;
-		case 'b':              
+		case 'b':
 			//
 			test1++;
 			break;
-		case 'n':              
+		case 'n':
 			test2++;
-		
+
 			break;
-		case 'm':              
+		case 'm':
 			test3++;
 
 			break;
-		case 'h':              
+		case 'h':
 			test4++;
 
 			break;
-		case 'j':              
+		case 'j':
 			test5++;
 
 			break;
-		case 'k':              
+		case 'k':
 			test6++;
 
 			break;
+		case 'd':
+			abilitypressed = true;
 
-
+			break;
 
 	     default:
 			break;
 	}
 	glutPostRedisplay();
+}
+
+void f1Ability(int) {
+
+		if (f1_xability >= 3) {
+			abilitypressed = false;
+			abhaspress = false;
+		}
+		else {
+			abhaspress = true;
+			f1_xability += 0.015;
+		}
+
+		glutPostRedisplay();
+		glutTimerFunc(1000/60, f1Ability, 0);
+
+		/*f1_xability += 0.015;
+		if (f1_xability >= 3) {
+			f1_xability = 0;
+			abilitypressed = false;
+			abhaspress = false;
+		}
+
+		if(!abhaspress) {
+			f1_xability = 0;
+		}*/
+
 }
 
 
@@ -240,7 +287,7 @@ int main (int argc, char *argv[])
    using the escape key.						  */
 
 	{
-		
+
 
 		input_param();
 		glutInit            ( &argc, argv );
