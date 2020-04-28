@@ -56,14 +56,17 @@ int test6 = 1;
 
 //code for ability movement
 float f1_xability = 0;
+float f2_xability = 0;
 bool abilitypressed = false;
+bool abilitypressed2 = false;
 bool abhaspress = false;
-
+bool achaspress = false;
 /***************************************************************************/
 //battleground
 void drawBattleground();
 void writeControls();
 void f1Ability(int);
+void f2Ability(int);
 
 
 void fighterFunction(int fighter){
@@ -146,6 +149,18 @@ void display(void)   // Create The Display Function
 	glTranslatef(secondFighterPosition, 0, 0);
 	glRotatef(210, 0, 1, 0);
 	fighterFunction(secondFighter);
+	if (abilitypressed2) {
+		glPushMatrix();
+		glColor3f(1, 0.0, 0.0);
+		glTranslatef(f2_xability, 0, 0.09);
+		glutSolidCube(.05);
+		glPopMatrix();
+		if (!achaspress) {
+			glutTimerFunc(0, f2Ability, 0);
+		}
+	} else {
+		f2_xability = 0;
+	}
 	glPopMatrix();
 
 
@@ -158,7 +173,7 @@ void display(void)   // Create The Display Function
 void drawBattleground()
 {
 	glPushMatrix();
-	//glColor3f(0.25, 0.0, 0.25);
+	glColor3f(0.25, 0.0, 0.25);
 	glTranslatef(0, -1.18, 0);
 	glutSolidCube(2);
 	glPopMatrix();
@@ -233,19 +248,13 @@ void keyboard ( unsigned char key, int x, int y )  // Create Keyboard Function
 			test4++;
 
 			break;
-		case 'j':
-			test5++;
-
-			break;
-		case 'k':
-			test6++;
-
-			break;
 		case 'd':
 			abilitypressed = true;
 
 			break;
-
+		case 'j':
+			abilitypressed2 = true;
+			break;
 	     default:
 			break;
 	}
@@ -277,6 +286,21 @@ void f1Ability(int) {
 			f1_xability = 0;
 		}*/
 
+}
+
+void f2Ability(int) {
+
+		if (f2_xability <= -3) {
+			abilitypressed2 = false;
+			achaspress = false;
+		}
+		else {
+			achaspress = true;
+			f2_xability -= 0.15;
+		}
+
+		glutPostRedisplay();
+		glutTimerFunc(1000/60, f2Ability, 0);
 }
 
 
