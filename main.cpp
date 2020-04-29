@@ -37,7 +37,8 @@ float secondFighterPosition = 2;
 float firstFighterHealth = 1;
 float secondFighterHealth = 1;
 
-
+int firstWins = 0;
+int secondWins = 0;
 
 
 struct timespec tim; 
@@ -126,12 +127,10 @@ void display(void)   // Create The Display Function
 
 	glOrtho(1, 1, 1, 1, 1, 1);
 	glEnable(GL_DEPTH_CLAMP);
+	glEnable(GL_DEPTH_TEST);
 
 	//draw controls
-	writeControls();
-
-	//draw healthbars
-	drawHealthbars();	
+	writeControls();	
 
 	//draw battleground
 	drawBattleground();
@@ -145,6 +144,7 @@ void display(void)   // Create The Display Function
 	//draw first fighter
 	glPushMatrix();
 	glTranslatef(firstFighterPosition, 0, 0);
+	//glRotatef(130, 0, 1, 0);
 	fighterFunction(firstFighter);
 	if (abilitypressed) {
 		glPushMatrix();
@@ -194,32 +194,77 @@ void display(void)   // Create The Display Function
 	} else {
 		f2_xability = 0;
 	}
-	glPopMatrix();
 
 	
-	//0 hp
-	tim.tv_sec = 3;
-	if (firstFighterHealth <= 0){
-	glPushMatrix();
-	glColor3f(0, 0, 0);
-	glutSolidCube(2);
 	glPopMatrix();
-	fighterFunction(secondFighter);
-	cout << "second fighter wins!" << endl;
-	nanosleep(&tim, &tim2);
-	exit(1);
+	glPopMatrix();
+	//draw healthbars
+	drawHealthbars();
+	
+	if(firstWins){
+		cout << "first fighter wins!" << endl;
+		nanosleep(&tim, &tim2);
+		exit(1);
 	}
 
-	if (secondFighterHealth <= 0){
+	if(secondWins){
+		cout << "second fighter wins!" << endl;
+		nanosleep(&tim, &tim2);
+		exit(1);
+	}
+
+
+	//0 hp
+	tim.tv_sec = 8;
+	if (firstFighterHealth <= 0.1){
+	glPushMatrix();
+	//glColor3f(0, 0, 0);
+	//glutSolidCube(2);
+	fighterFunction(secondFighter);
+	glPopMatrix();
+	
+	secondWins = 1;
+	}
+	//secondFighterHealth = 0; //test
+	if (secondFighterHealth <= 0.1){
 	glPushMatrix();
 	glColor3f(0, 0, 0);
+	//glutSolidCube(2);
+	//glColor3f(1, 0, 0); 
+	glTranslatef(0, 0, -1);
+	
 	glutSolidCube(2);
+
 	glPopMatrix();
+	glPushMatrix();
+
+	glTranslatef(0, 0, -2);
+
+	glRotatef(75, 0, 1, 0);
 	fighterFunction(firstFighter);
-	cout << "first fighter wins!" << endl;
-	nanosleep(&tim, &tim2);
-	exit(1);
+	//glPopMatrix();
+	//glPushMatrix();
+	
+	
+
+	//glPushMatrix();
+	glColor3f(1, 0, 0);
+	//glTranslatef(0,0,-3);
+	/*glBegin(GL_POLYGON);
+	glVertex3f(-0.60, 0.77, 0); // <--- -0.60 instead of -0.68
+	glVertex3f(-0.68, 0.77, 0); // <--- -0.68 instead of -0.60
+	glVertex3f(-0.7, 0.68, 0);
+	glVertex3f(-0.64, 0.63, 0);
+	glVertex3f(-0.58, 0.68, 0);
+	glEnd();*/
+	glPopMatrix();
+	
+
+	glPopMatrix();
+	firstWins = 1;
 	}
+	
+	
 
 
 	glPopMatrix();
