@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <time.h>
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -33,6 +34,16 @@ int secondFighter = 0;
 float firstFighterPosition = -2;
 float secondFighterPosition = 2;
 
+float firstFighterHealth = 1;
+float secondFighterHealth = 1;
+
+
+
+
+struct timespec tim; 
+struct timespec tim2;
+
+
 float view_angle_1 = 0; //16
 float view_angle_2 = 75; //20
 float view_angle_3 = 0;
@@ -44,6 +55,7 @@ float translate_z = 0;
 float scale_x = 1;
 float scale_y = 1;
 float scale_z = 1;
+
 
 int cube = 1;
 
@@ -64,6 +76,7 @@ bool achaspress = false;
 /***************************************************************************/
 //battleground
 void drawBattleground();
+void drawHealthbars();
 void writeControls();
 void f1Ability(int);
 void f2Ability(int);
@@ -99,6 +112,7 @@ void initWindow()
 
 void display(void)   // Create The Display Function
 {
+	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	      // Clear Screen
 
 	glPushMatrix();
@@ -115,6 +129,9 @@ void display(void)   // Create The Display Function
 
 	//draw controls
 	writeControls();
+
+	//draw healthbars
+	drawHealthbars();	
 
 	//draw battleground
 	drawBattleground();
@@ -135,6 +152,14 @@ void display(void)   // Create The Display Function
 		glTranslatef(f1_xability, 0, 0.09);
 		glutSolidCube(.05);
 		glPopMatrix();
+
+		if (f1_xability > (secondFighterPosition - firstFighterPosition)){
+			secondFighterHealth -= 0.10;
+			abilitypressed = false;
+			abhaspress = false;
+			
+		}
+
 		if (!abhaspress) {
 			glutTimerFunc(0, f1Ability, 0);
 		}
@@ -155,6 +180,14 @@ void display(void)   // Create The Display Function
 		glTranslatef(f2_xability, 0, 0.09);
 		glutSolidCube(.05);
 		glPopMatrix();
+
+		if (firstFighterPosition > f2_xability){
+			firstFighterHealth -= 0.10;
+			abilitypressed2 = false;
+			achaspress = false;
+			
+		}
+
 		if (!achaspress) {
 			glutTimerFunc(0, f2Ability, 0);
 		}
@@ -163,7 +196,30 @@ void display(void)   // Create The Display Function
 	}
 	glPopMatrix();
 
+	
+	//0 hp
+	tim.tv_sec = 3;
+	if (firstFighterHealth <= 0){
+	glPushMatrix();
+	glColor3f(0, 0, 0);
+	glutSolidCube(2);
+	glPopMatrix();
+	fighterFunction(secondFighter);
+	cout << "second fighter wins!" << endl;
+	nanosleep(&tim, &tim2);
+	exit(1);
+	}
 
+	if (secondFighterHealth <= 0){
+	glPushMatrix();
+	glColor3f(0, 0, 0);
+	glutSolidCube(2);
+	glPopMatrix();
+	fighterFunction(firstFighter);
+	cout << "first fighter wins!" << endl;
+	nanosleep(&tim, &tim2);
+	exit(1);
+	}
 
 
 	glPopMatrix();
@@ -176,6 +232,28 @@ void drawBattleground()
 	glColor3f(0.25, 0.0, 0.25);
 	glTranslatef(0, -1.18, 0);
 	glutSolidCube(2);
+	glPopMatrix();
+}
+
+void drawHealthbars()
+{
+	//fighter 1
+	glPushMatrix();
+	glTranslatef(-0.95, 0.82, 0);
+	glColor3f(0.0, 1.0, 1.0);
+	glRectf(0, 0, 0.7, 0.1);
+	glColor3f(1.0, 0.0, 0.0);
+	glRectf(0, 0, (0.7*firstFighterHealth), 0.1);
+
+	glPopMatrix();
+
+	//fighter 2
+	glPushMatrix();
+	glTranslatef(0.25, 0.82, 0);
+	glColor3f(0.0, 1.0, 1.0);
+	glRectf(0, 0, 0.7, 0.1);
+	glColor3f(1.0, 0.0, 0.0);
+	glRectf(0, 0, (0.7*secondFighterHealth), 0.1);
 	glPopMatrix();
 }
 
