@@ -181,7 +181,7 @@ void display(void)   // Create The Display Function
 		glutSolidCube(.05);
 		glPopMatrix();
 
-		if (firstFighterPosition > f2_xability){
+		if (f2_xability < (firstFighterPosition - secondFighterPosition)){
 			firstFighterHealth -= 0.10;
 			abilitypressed2 = false;
 			achaspress = false;
