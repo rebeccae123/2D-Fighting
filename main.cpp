@@ -176,9 +176,10 @@ void display(void)   // Create The Display Function
 	fighterFunction(secondFighter);
 	if (abilitypressed2) {
 		glPushMatrix();
-		glColor3f(1, 0.0, 0.0);
+		glColor3f(0, 1.0, 1.0);
 		glTranslatef(f2_xability, 0, 0.09);
-		glutSolidCube(.05);
+		glRotatef(-90, 0, 1, 0);
+		glutSolidTeapot(.05);
 		glPopMatrix();
 
 		if (f2_xability < (firstFighterPosition - secondFighterPosition)){
@@ -202,30 +203,77 @@ void display(void)   // Create The Display Function
 	drawHealthbars();
 	
 	if(firstWins){
-		cout << "first fighter wins!" << endl;
+		cout << "FIRST FIGHTER WINS!" << endl;
+		cout << "Window closing in 8 seconds." << endl;
 		nanosleep(&tim, &tim2);
 		exit(1);
 	}
 
 	if(secondWins){
-		cout << "second fighter wins!" << endl;
+		cout << "SECOND FIGHTER WINS!" << endl;
+		cout << "Window closing in 8 seconds." << endl;
 		nanosleep(&tim, &tim2);
 		exit(1);
 	}
 
 
 	//0 hp
-	tim.tv_sec = 8;
+	tim.tv_sec = 8; 
+
 	if (firstFighterHealth <= 0.1){
 	glPushMatrix();
-	//glColor3f(0, 0, 0);
+	glColor3f(0, 0, 0);
 	//glutSolidCube(2);
+	//glColor3f(1, 0, 0); 
+	glTranslatef(0, 0, -1);
+	
+	glutSolidCube(2);
+
+	glPopMatrix();
+	glPushMatrix();
+
+	glTranslatef(0, 0, -2);
+
+	glRotatef(75, 0, 1, 0);
 	fighterFunction(secondFighter);
 	glPopMatrix();
+
+	glPushMatrix();
+
+	for(int i = 0; i < 5; i++){
+		glPushMatrix();
+		glColor3f(1, 1, 0);
+		glTranslatef(0.0,0.0,-3);
+		glRotatef((i * 72), 0, 0, 1);
+		glBegin(GL_POLYGON);
+		glVertex3f(0.06, 0.40, 0); 
+		glVertex3f(0.40, 0.06, 0); 
+		glVertex3f(0.15, 0.15, 0); 
+		glEnd();
+
+		glBegin(GL_POLYGON);
+		glVertex3f(0.13, 0.80, 0); 
+		glVertex3f(0.80, 0.13, 0); 
+		glVertex3f(0.30, 0.30, 0); 
+		glEnd();
 	
+		glBegin(GL_POLYGON);
+		glVertex3f(0.19, 1.2, 0); 
+		glVertex3f(1.2, 0.19, 0); 
+		glVertex3f(0.50, 0.50, 0); 
+		glEnd();
+
+
+		glPopMatrix();
+	}
+	
+
+	glPopMatrix();
 	secondWins = 1;
 	}
-	//secondFighterHealth = 0; //test
+
+
+	
 	if (secondFighterHealth <= 0.1){
 	glPushMatrix();
 	glColor3f(0, 0, 0);
@@ -242,22 +290,36 @@ void display(void)   // Create The Display Function
 
 	glRotatef(75, 0, 1, 0);
 	fighterFunction(firstFighter);
-	//glPopMatrix();
-	//glPushMatrix();
-	
-	
-
-	//glPushMatrix();
-	glColor3f(1, 0, 0);
-	//glTranslatef(0,0,-3);
-	/*glBegin(GL_POLYGON);
-	glVertex3f(-0.60, 0.77, 0); // <--- -0.60 instead of -0.68
-	glVertex3f(-0.68, 0.77, 0); // <--- -0.68 instead of -0.60
-	glVertex3f(-0.7, 0.68, 0);
-	glVertex3f(-0.64, 0.63, 0);
-	glVertex3f(-0.58, 0.68, 0);
-	glEnd();*/
 	glPopMatrix();
+
+	glPushMatrix();
+
+	for(int i = 0; i < 5; i++){
+		glPushMatrix();
+		glColor3f(1, 1, 0);
+		glTranslatef(0.0,0.0,-3);
+		glRotatef((i * 72), 0, 0, 1);
+		glBegin(GL_POLYGON);
+		glVertex3f(0.06, 0.40, 0); 
+		glVertex3f(0.40, 0.06, 0); 
+		glVertex3f(0.15, 0.15, 0); 
+		glEnd();
+
+		glBegin(GL_POLYGON);
+		glVertex3f(0.13, 0.80, 0); 
+		glVertex3f(0.80, 0.13, 0); 
+		glVertex3f(0.30, 0.30, 0); 
+		glEnd();
+	
+		glBegin(GL_POLYGON);
+		glVertex3f(0.19, 1.2, 0); 
+		glVertex3f(1.2, 0.19, 0); 
+		glVertex3f(0.50, 0.50, 0); 
+		glEnd();
+
+
+		glPopMatrix();
+	}
 	
 
 	glPopMatrix();
@@ -355,22 +417,6 @@ void keyboard ( unsigned char key, int x, int y )  // Create Keyboard Function
 			secondFighterPosition+=0.07;
 
 			break;
-		case 'b':
-			//
-			test1++;
-			break;
-		case 'n':
-			test2++;
-
-			break;
-		case 'm':
-			test3++;
-
-			break;
-		case 'h':
-			test4++;
-
-			break;
 		case 'd':
 			abilitypressed = true;
 
@@ -419,7 +465,7 @@ void f2Ability(int) {
 		}
 		else {
 			achaspress = true;
-			f2_xability -= 0.15;
+			f2_xability -= 0.015;
 		}
 
 		glutPostRedisplay();
